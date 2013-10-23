@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+import sys
+
 def cleanstr( list ):
 	result = str( list )
 	result = result.replace( '\'', '' ).strip( '(),' );
@@ -40,6 +42,7 @@ class Translation(object):
 	#	return result
 
 if __name__ == '__main__':
-	t = Translation( cleanstr );
-	print t.local_variables()
-	print t.function_signature()
+	locs = {}
+	exec( sys.argv[1], {}, locs )
+	t = Translation( locs[locs.keys()[0]] );
+	sys.stdout.write( t.function_signature() );
