@@ -10,7 +10,7 @@ testBasic();
 
 function testBasic() {
 	var e = new events.EventEmitter()
-	  , p = new Processor( { cmd: "python", args: [ "translate.py", "def hello(): print \"hello\"\n" ], cwd: "../src/" }, e )
+	  , p = new Processor( { cmd: "python", args: [ "translate.py", "def hello(): print \"hello\"\n" ], cwd: "../logic/" }, e )
 	  , result = ''; 
 
 	e.on( 'read', function( data ) {
