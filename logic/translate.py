@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import sys
+from variable import Variable
 
 def cleanstr( list ):
 	result = str( list )
@@ -26,23 +27,36 @@ class Translation(object):
 		result += cleanstr( self.arguments ) + ')'
 		return result
 
-	#def function_logic(self, space):
-	#	future = self.function( * self.transform( self.arguments, space ) )
-	#	return future.project( space )
-		
-	#	for dim in space:							
-	#		result += '  ' + self[dim] + ';\n'
-	#	return result
+	def function_logic(self, space):
+		future = self.function( * self.transform( self.arguments, space ) )
+		return str( future )
 
+	def transform( self, arguments, space ):
+		result = []
+		for arg in arguments:
+			result.append( Variable( arg ) )
+		return result
 
-	#def transform( self, arguments, space ):
-		#result = []
-	#	for arg in arguments:
-	#		result.append( Future( arg, space ) )
-	#	return result
+def translate( f, space, return_index = None, return_operation = None ):
+	t = Translation( f );
+	
+	result =  'function ' + t.function_signature() + ' {\n'
+	
+	if t.has_local_variables():
+		result += 'var = ' + t.local_variables() + ';\n'
+	
+	if return_operation is not None:
+		result += '  return '
+	
+	result += t.function_logic( space ) + ';\n';
+	
+	if return_index is not None:
+		result += '  return ' + f.func_code.co_varnames[return_index].strip( ',' ) + ';\n'
+
+	return result + '}';
 
 if __name__ == '__main__':
 	locs = {}
 	exec( sys.argv[1], {}, locs )
-	t = Translation( locs[locs.keys()[0]] );
-	sys.stdout.write( t.function_signature() );
+	
+	sys.stdout.write( translate( locs[locs.keys()[0]], [ 'x', 'y', 'z' ], None, 1 ) )
