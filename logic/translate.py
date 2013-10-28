@@ -2,6 +2,7 @@
 
 import sys
 from variable import Variable
+from sandbox import Sandbox 
 
 def cleanstr( list ):
 	result = str( list )
@@ -28,7 +29,9 @@ class Translation(object):
 		return result
 
 	def function_logic(self, space):
-		future = self.function( * self.transform( self.arguments, space ) )
+		
+		sandbox = Sandbox()
+    	future = sandbox.call(self.function, * self.transform( self.arguments, space ) )
 		return str( future )
 
 	def transform( self, arguments, space ):
