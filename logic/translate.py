@@ -2,7 +2,6 @@
 
 import sys
 from variable import Variable
-from sandbox import Sandbox 
 
 def cleanstr( list ):
 	result = str( list )
@@ -29,9 +28,7 @@ class Translation(object):
 		return result
 
 	def function_logic(self, space):
-		
-		sandbox = Sandbox()
-    	future = sandbox.call(self.function, * self.transform( self.arguments, space ) )
+		future = self.function( * self.transform( self.arguments, space ) )
 		return str( future )
 
 	def transform( self, arguments, space ):
@@ -59,7 +56,7 @@ def translate( f, space, return_index = None, return_operation = None ):
 	return result + '}';
 
 if __name__ == '__main__':
-	locs = {}
-	exec( sys.argv[1], {}, locs )
-	
-	sys.stdout.write( translate( locs[locs.keys()[0]], [ 'x', 'y', 'z' ], None, 1 ) )
+	Locals = {}
+	exec( sys.argv[1], {}, Locals )
+	result = translate( Locals[Locals.keys()[0]], [ 'x', 'y', 'z' ], None, 1 )
+	sys.stdout.write( result )
