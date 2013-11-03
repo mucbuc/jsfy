@@ -10,15 +10,15 @@ testBasic();
 
 function testBasic() {
 	var e = new events.EventEmitter()
-	  , p = new Processor( { cmd: "python", args: [ "translate.py", "def hello(): print \"hello\"\n" ], cwd: "../logic/" }, e )
+	  , p = new Processor( { cmd: "python", args: [ "translate.py", "def hello():pass\n" ], cwd: "../logic/" }, e )
 	  , result = ''; 
 
 	e.on( 'read', function( data ) {
 		result += data.toString();
 	} );
 
-	e.on( 'exit', function() {
-		assert( result == 'hello()' );
+	e.on( 'close', function() {
+		assert( result == 'function hello() {\n}' );
 		console.log( 'basic test passed' );
 	} );
 
