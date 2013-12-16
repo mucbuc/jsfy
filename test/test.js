@@ -6,11 +6,33 @@ var assert = require( 'assert' )
 
 assert( Processor );
 
-testBasic();
+testNOP();
+testLocals();
 
-function testBasic() {
+function testLocals() {
+
+	translate( 'def dot(a, b, c):return a+b+c\n', function( result ) {
+		
+		console.log( 'result', result );
+
+		assert( result == 'function hello(a) {\nvar loc;\n}' );
+		console.log( 'testLocals passed' );
+	} );
+}
+
+function testNOP() {
+
+	translate( 'def hello():pass\n', done );
+
+	function done( result ) {
+		assert( result == 'function hello() {\n}' );
+		console.log( 'testNOP passed' );
+	}
+}
+
+function translate( code, done ) {
 	var e = new events.EventEmitter()
-	  , p = new Processor( { cmd: "python", args: [ "translate.py", "def hello():pass\n" ], cwd: "../logic/" }, e )
+	  , p = new Processor( { cmd: "python", args: [ "translate.py", code ], cwd: "../logic/" }, e )
 	  , result = ''; 
 
 	e.on( 'read', function( data ) {
@@ -18,8 +40,7 @@ function testBasic() {
 	} );
 
 	e.on( 'close', function() {
-		assert( result == 'function hello() {\n}' );
-		console.log( 'basic test passed' );
+		done( result );
 	} );
 
 	e.on( 'child_error', function(data) {
